@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Crossword Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Mode & Difficulty Menu -->
+  <div class="menu-bar">
+    <div class="menu-group">
+      <button class="menu-btn" data-type="normal">Normal</button>
+      <button class="menu-btn" data-type="cryptic">Cryptic</button>
+    </div>
+    <div class="menu-group">
+      <button class="menu-btn" data-difficulty="easy">Easy</button>
+      <button class="menu-btn" data-difficulty="medium">Medium</button>
+      <button class="menu-btn" data-difficulty="hard">Hard</button>
+    </div>
+  </div>
+
+  <!-- Welcome Screen -->
+  <div class="welcome-screen" id="welcome">
+    <div class="welcome-message">Welcome<span class="dots"></span></div>
+    <button class="play-button" onclick="startGame()">Play</button>
+  </div>
+
+  <!-- Game Screen -->
+  <div class="game-screen" id="game">
+    <div class="clue" id="clue"></div>
+    <div class="squares" id="squares"></div>
+    <button class="submit-button" id="submitBtn" onclick="submitAnswer()">Submit</button>
+  </div>
+
+  <!-- Fireworks Overlay -->
+  <div class="fireworks" id="fireworks"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
