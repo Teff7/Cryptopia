@@ -6,11 +6,11 @@
   <title>Daily Clue Game</title>
   <style>
     body {
-      font-family: sans-serif;
       margin: 0;
       padding: 0;
       background: black;
       color: white;
+      font-family: sans-serif;
       text-align: center;
       overflow: hidden;
     }
@@ -60,7 +60,7 @@
       display: inline-block;
       width: 1.5rem;
       text-align: left;
-      animation: blink 1s steps(3, end) infinite;
+      animation: blink 2s steps(3, end) infinite;
     }
     @keyframes blink {
       0%   { content: ''; }
@@ -101,7 +101,7 @@
     }
     @keyframes redFlash {
       from { background: white; color: black; }
-      to   { background: red;   color: white; }
+      to   { background: red; color: white; }
     }
     .game-screen.flash-green .square {
       animation: greenFlash 2s 1;
@@ -132,7 +132,7 @@
 </head>
 <body>
   <!-- Mode & Difficulty Menu -->
-  <div class="menu-bar">
+  <div class="menu-bar" id="menuBar">
     <div class="menu-group">
       <button class="menu-btn"        data-type="normal">Normal</button>
       <button class="menu-btn active" data-type="cryptic">Cryptic</button>
@@ -188,8 +188,9 @@
         .catch(err => console.error('Failed to load clues:', err));
     });
 
-    // Start the game
+    // Start the game: hide menu and welcome, show game
     function startGame() {
+      document.getElementById('menuBar').style.display = 'none';
       document.getElementById('welcome').style.display = 'none';
       document.getElementById('game').style.display = 'flex';
       fetchClue(0);
