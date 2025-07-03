@@ -27,14 +27,12 @@
     /* Annotation styling */
     .clue .indicator, .clue .fodder, .clue .def { color: inherit; position: relative; }
     .clue.help-on .def { color: hotpink; }
-    .clue.annot-on .fodder { color: red; }
     .clue.annot-on .indicator { color: var(--indicator-col, lightblue); }
-    .clue.annot-on .def { color: hotpink; }
-    /* Tooltip for annotation */
-    .clue.help-on .def:hover::after { content: 'Definition'; color: black; background: white; padding: 0.2rem; border-radius: 4px; font-size: 0.8rem; position: absolute; bottom: -1.5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; }
-    .clue.annot-on .indicator:hover::after { content: 'Indicator: manipulate letters as directed'; color: black; background: white; padding: 0.2rem; border-radius: 4px; font-size: 0.8rem; position: absolute; bottom: -1.5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; }
-    .clue.annot-on .fodder:hover::after { content: 'Fodder: these letters are used'; color: black; background: white; padding: 0.2rem; border-radius: 4px; font-size: 0.8rem; position: absolute; bottom: -1.5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; }
-    .clue.annot-on .def:hover::after { content: 'Definition: meaning of the answer'; color: black; background: white; padding: 0.2rem; border-radius: 4px; font-size: 0.8rem; position: absolute; bottom: -1.5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+    .clue.annot-on .fodder { color: red; }
+    /* Tooltip uses data-tooltip attribute */
+    .clue.help-on .def:hover::after,
+    .clue.annot-on .indicator:hover::after,
+    .clue.annot-on .fodder:hover::after { content: attr(data-tooltip); color: black; background: white; padding: 0.2rem; border-radius: 4px; font-size: 0.8rem; position: absolute; bottom: -1.5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; }
     /* ClueType indicator colours */
     .clue.anagram      { --indicator-col: lightblue; }
     .clue.hidden       { --indicator-col: green; }
@@ -60,10 +58,10 @@
     <div class="squares" id="squares"></div>
     <button class="submit-button" id="submitBtn" onclick="submitAnswer()">Submit</button>
     <div class="help-grid">
+      <button class="help-button" id="btnDef">Give me the Def!</button>
+      <button class="help-button" id="btnLetter">Give me a Letter!</button>
       <button class="help-button" id="btnAnnot">Analyse Clue</button>
       <button class="help-button" id="btnNorm">Give me a New Clue</button>
-      <button class="help-button" id="btnLetter">Give me a Letter!</button>
-      <button class="help-button" id="btnDef">Give me the Def!</button>
     </div>
   </div>
 
@@ -72,94 +70,50 @@
   <script>
     const TYPE = 'cryptic';
     let allClues = [];
+    const tooltips = {
+      anagram: 'This indicates an anagram clue, shuffle the letters in the fodder!',
+      hidden:  'This indicates a hidden-word clue, look inside the highlighted text!',
+      container:'This indicates a container clue, insert the letters as directed!',
+      reversal:'This indicates a reversal clue, read the highlighted letters backwards!',
+      deletion:'This indicates a deletion clue, remove the appropriate letters!',
+      homophone:'This indicates a homophone clue, use a word that sounds like the highlighted text!',
+      acrostic:'This indicates an initial-letter clue, take the first letters of the highlighted words!',
+      spoonerism:'This indicates a Spoonerism clue, swap the initial sounds of highlighted words!',
+      charade:'This indicates a charade clue, join the highlighted parts in order!',
+      double:'This indicates a double-definition clue, both parts define the same word!',
+      lit:'This indicates an &lit clue, the entire clue is wordplay and definition!'
+    };
     window.addEventListener('load', () => {
-      fetch('clues.json')
-        .then(res => res.json())
-        .then(json => { allClues = json.filter(p => p.type === TYPE); setupHandlers(); fetchClue(0); })
-        .catch(console.error);
+      fetch('clues.json').then(res => res.json()).then(json => { allClues = json.filter(p => p.type === TYPE); setupHandlers(); fetchClue(0); }).catch(console.error);
     });
-
     function setupHandlers() {
-      document.getElementById('btnDef').onclick = () => {
-        document.getElementById('clue').classList.toggle('help-on');
-      };
+      document.getElementById('btnDef').onclick = () => document.getElementById('clue').classList.toggle('help-on');
       document.getElementById('btnLetter').onclick = () => {
-        const empties = letters.map((l,i) => l === '' ? i : null).filter(i => i !== null);
-        if (!empties.length) return;
-        const rand = empties[Math.floor(Math.random() * empties.length)];
-        letters[rand] = answer[rand]; renderSquares();
+        const empties = letters.map((l,i) => l=== ''?i:null).filter(i=>i!==null);
+        if(!empties.length) return;
+        const rand=empties[Math.floor(Math.random()*empties.length)]; letters[rand]=answer[rand]; renderSquares();
       };
-      document.getElementById('btnNorm').onclick = () => {
-        clueDiv.textContent = currentEntry.normalClue;
-      };
-      document.getElementById('btnAnnot').onclick = () => {
-        document.getElementById('clue').classList.toggle('annot-on');
-      };
+      document.getElementById('btnNorm').onclick = () => clueDiv.textContent = currentEntry.normalClue;
+      document.getElementById('btnAnnot').onclick = () => document.getElementById('clue').classList.toggle('annot-on');
     }
-
-    let answer = '', letters = [], activeIndex = 0, currentIndex = 0, currentEntry;
-    const clueDiv = document.getElementById('clue'), squaresDiv = document.getElementById('squares'), gameScreen = document.getElementById('game');
-
-    function startGame() {
-      document.getElementById('welcome').style.display = 'none';
-      document.getElementById('game').style.display = 'flex';
+    let answer='', letters=[], activeIndex=0, currentIndex=0, currentEntry;
+    const clueDiv=document.getElementById('clue'), squaresDiv=document.getElementById('squares'), gameScreen=document.getElementById('game');
+    function startGame(){ document.getElementById('welcome').style.display='none'; document.getElementById('game').style.display='flex'; }
+    function fetchClue(idx){ currentIndex=idx; currentEntry=allClues[idx]||allClues[0]; setupGame(currentEntry); }
+    function setupGame(entry){
+      answer=entry.answer; letters=Array(answer.length).fill(''); activeIndex=0;
+      let html=entry.clue;
+      [...entry.definitionWords].forEach(w=>{ html=html.replace(new RegExp(`(${w})`,'gi'),`<span class="def" data-tooltip="This is the definition, it's what the answer means!">$1</span>`); });
+      [...entry.indicatorWords].forEach(w=>{ html=html.replace(new RegExp(`(${w})`,'gi'),`<span class="indicator" data-tooltip="${tooltips[entry.clueType]}">$1</span>`); });
+      [...entry.fodderWords].forEach(w=>{ html=html.replace(new RegExp(`(${w})`,'gi'),`<span class="fodder" data-tooltip="This is the fodder, these letters are used">$1</span>`); });
+      clueDiv.className=`clue ${entry.clueType}`; clueDiv.innerHTML=html; clueDiv.classList.remove('help-on','annot-on'); renderSquares();
     }
-
-    function fetchClue(idx) {
-      currentIndex = idx;
-      currentEntry = allClues[idx] || allClues[0];
-      setupGame(currentEntry);
-    }
-
-    function setupGame(entry) {
-      answer = entry.answer; letters = Array(answer.length).fill(''); activeIndex = 0;
-      let html = entry.clue;
-      [...entry.indicatorWords, ...entry.fodderWords, ...entry.definitionWords].forEach(w => {
-        const cls = entry.indicatorWords.includes(w) ? 'indicator' : entry.fodderWords.includes(w) ? 'fodder' : 'def';
-        html = html.replace(new RegExp(`(${w})`, 'gi'), `<span class="${cls}">$1</span>`);
-      });
-      clueDiv.className = `clue ${entry.clueType}`;
-      clueDiv.innerHTML = html;
-      clueDiv.classList.remove('help-on','annot-on');
-      renderSquares();
-    }
-
-    function renderSquares() {
-      squaresDiv.innerHTML = ''; letters.forEach((ltr,i) => {
-        const box = document.createElement('div'); box.className = 'square'; box.textContent = ltr;
-        box.onclick = () => { activeIndex = i; highlightActive(); };
-        squaresDiv.appendChild(box);
-      }); highlightActive();
-    }
-
-    function highlightActive() {
-      document.querySelectorAll('.square').forEach((b,i) => b.classList.toggle('active', i === activeIndex));
-    }
-
-    document.addEventListener('keydown', e => {
-      if (/^[a-zA-Z]$/.test(e.key)) { letters[activeIndex] = e.key.toUpperCase(); if (activeIndex < letters.length-1) activeIndex++; renderSquares(); }
-      else if (e.key === 'Backspace') { letters[activeIndex] = ''; if (activeIndex>0) activeIndex--; renderSquares(); }
-      else if (e.key === 'Enter') submitAnswer();
-    });
-
-    function submitAnswer() {
-      if (letters.join('') === answer) {
-        gameScreen.classList.add('flash-green'); setTimeout(() => {
-          gameScreen.classList.remove('flash-green');
-          if (currentIndex < allClues.length-1) fetchClue(currentIndex+1);
-          else finishGame();
-        },2000);
-      } else { gameScreen.classList.add('flash-red'); setTimeout(() => gameScreen.classList.remove('flash-red'), 600); }
-    }
-
-    function finishGame() {
-      ['clue','squares','submitBtn','btnDef','btnLetter','btnNorm','btnAnnot'].forEach(id => {
-        const el = document.getElementById(id); if (el) el.style.display = 'none';
-      }); showFireworks();
-    }
-
-    function showFireworks() {
-      const fw = document.getElementById('fireworks'); for (let i=0;i<100;i++) { const p = document.createElement('div'); p.className='pixel'; p.style.top=Math.random()*100+'vh'; p.style.left=Math.random()*100+'vw'; fw.appendChild(p);}    }
+    function renderSquares(){ squaresDiv.innerHTML=''; letters.forEach((ltr,i)=>{ const box=document.createElement('div'); box.className='square'; box.textContent=ltr; box.onclick=()=>{activeIndex=i;highlightActive();}; squaresDiv.appendChild(box); }); highlightActive(); }
+    function highlightActive(){ document.querySelectorAll('.square').forEach((b,i)=>b.classList.toggle('active',i===activeIndex)); }
+    document.addEventListener('keydown',e=>{ if(/^[a-zA-Z]$/.test(e.key)){ letters[activeIndex]=e.key.toUpperCase(); if(activeIndex<letters.length-1)activeIndex++; renderSquares(); } else if(e.key==='Backspace'){ letters[activeIndex]=''; if(activeIndex>0)activeIndex--; renderSquares(); } else if(e.key==='Enter') submitAnswer(); });
+    function submitAnswer(){ if(letters.join('')===answer){ gameScreen.classList.add('flash-green'); setTimeout(()=>{ gameScreen.classList.remove('flash-green'); if(currentIndex<allClues.length-1) fetchClue(currentIndex+1); else finishGame(); },2000); } else{ gameScreen.classList.add('flash-red'); setTimeout(()=>gameScreen.classList.remove('flash-red'),600); } }
+    function finishGame(){ ['clue','squares','submitBtn','btnDef','btnLetter','btnAnnot','btnNorm'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; }); showFireworks(); }
+    function showFireworks(){ const fw=document.getElementById('fireworks'); for(let i=0;i<100;i++){ const p=document.createElement('div'); p.className='pixel'; p.style.top=Math.random()*100+'vh'; p.style.left=Math.random()*100+'vw'; fw.appendChild(p); } }
   </script>
 </body>
 </html>
