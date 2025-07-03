@@ -1,0 +1,37 @@
+[
+  {"id":5,"date":"2025-07-03","type":"cryptic","difficulty":"easy","clue":"Depressed in Widow nightmare. (4)","answer":"DOWN"},
+  {"id":6,"date":"2025-07-04","type":"cryptic","difficulty":"easy","clue":"Star lit up rebel city. (9)","answer":"CELEBRITY"},
+  {"id":7,"date":"2025-07-05","type":"cryptic","difficulty":"easy","clue":"Former wine \"contains exhaust\" (7)","answer":"RETIRED"},
+  {"id":8,"date":"2025-07-06","type":"cryptic","difficulty":"easy","clue":"Wicked \"back to walk the earth!\" (4)","answer":"LIVE"},
+  {"id":9,"date":"2025-07-07","type":"cryptic","difficulty":"easy","clue":"Moral within \"Marathon\" establishment? (6)","answer":"HONEST"},
+  
+  {"id":10,"date":"2025-07-08","type":"cryptic","difficulty":"medium","clue":"Depressed in Widow nightmare. (4)","answer":"DOWN"},
+  {"id":11,"date":"2025-07-09","type":"cryptic","difficulty":"medium","clue":"Star lit up rebel city. (9)","answer":"CELEBRITY"},
+  {"id":12,"date":"2025-07-10","type":"cryptic","difficulty":"medium","clue":"Former wine \"contains exhaust\" (7)","answer":"RETIRED"},
+  {"id":13,"date":"2025-07-11","type":"cryptic","difficulty":"medium","clue":"Wicked \"back to walk the earth!\" (4)","answer":"LIVE"},
+  {"id":14,"date":"2025-07-12","type":"cryptic","difficulty":"medium","clue":"Moral within \"Marathon\" establishment? (6)","answer":"HONEST"},
+  
+  {"id":15,"date":"2025-07-13","type":"cryptic","difficulty":"hard","clue":"Depressed in Widow nightmare. (4)","answer":"DOWN"},
+  {"id":16,"date":"2025-07-14","type":"cryptic","difficulty":"hard","clue":"Star lit up rebel city. (9)","answer":"CELEBRITY"},
+  {"id":17,"date":"2025-07-15","type":"cryptic","difficulty":"hard","clue":"Former wine \"contains exhaust\" (7)","answer":"RETIRED"},
+  {"id":18,"date":"2025-07-16","type":"cryptic","difficulty":"hard","clue":"Wicked \"back to walk the earth!\" (4)","answer":"LIVE"},
+  {"id":19,"date":"2025-07-17","type":"cryptic","difficulty":"hard","clue":"Moral within \"Marathon\" establishment? (6)","answer":"HONEST"},
+  
+  {"id":20,"date":"2025-07-18","type":"normal","difficulty":"easy","clue":"Not up. (4)","answer":"DOWN"},
+  {"id":21,"date":"2025-07-19","type":"normal","difficulty":"easy","clue":"Famous person. (9)","answer":"CELEBRITY"},
+  {"id":22,"date":"2025-07-20","type":"normal","difficulty":"easy","clue":"Withdrawn from active duty. (7)","answer":"RETIRED"},
+  {"id":23,"date":"2025-07-21","type":"normal","difficulty":"easy","clue":"Not recorded; happening now. (4)","answer":"LIVE"},
+  {"id":24,"date":"2025-07-22","type":"normal","difficulty":"easy","clue":"Truthful; free from deceit. (6)","answer":"HONEST"},
+  
+  {"id":25,"date":"2025-07-23","type":"normal","difficulty":"medium","clue":"Not up. (4)","answer":"DOWN"},
+  {"id":26,"date":"2025-07-24","type":"normal","difficulty":"medium","clue":"Famous person. (9)","answer":"CELEBRITY"},
+  {"id":27,"date":"2025-07-25","type":"normal","difficulty":"medium","clue":"Withdrawn from active duty. (7)","answer":"RETIRED"},
+  {"id":28,"date":"2025-07-26","type":"normal","difficulty":"medium","clue":"Not recorded; happening now. (4)","answer":"LIVE"},
+  {"id":29,"date":"2025-07-27","type":"normal","difficulty":"medium","clue":"Truthful; free from deceit. (6)","answer":"HONEST"},
+  
+  {"id":30,"date":"2025-07-28","type":"normal","difficulty":"hard","clue":"Not up. (4)","answer":"DOWN"},
+  {"id":31,"date":"2025-07-29","type":"normal","difficulty":"hard","clue":"Famous person. (9)","answer":"CELEBRITY"},
+  {"id":32,"date":"2025-07-30","type":"normal","difficulty":"hard","clue":"Withdrawn from active duty. (7)","answer":"RETIRED"},
+  {"id":33,"date":"2025-07-31","type":"normal","difficulty":"hard","clue":"Not recorded; happening now. (4)","answer":"LIVE"},
+  {"id":34,"date":"2025-08-01","type":"normal","difficulty":"hard","clue":"Truthful; free from deceit. (6)","answer":"HONEST"}
+]
