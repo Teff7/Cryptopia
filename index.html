@@ -1,22 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Crossword Game</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Clue Game</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+    .menu-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+    .menu-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .menu-btn,
+    .play-button,
+    .submit-button {
+      border: 2px solid white;
+      background: transparent;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .menu-btn.active {
+      background: white;
+      color: black;
+    }
+    .welcome-screen,
+    .game-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: black;
+      color: white;
+    }
+    .welcome-message {
+      font-size: 2rem;
+    }
+    .play-button {
+      margin-top: 2rem;
+    }
+    .dots::after {
+      content: '...';
+      display: inline-block;
+      width: 1.5rem;
+      text-align: left;
+      animation: blink 1s steps(3, end) infinite;
+    }
+    @keyframes blink {
+      0%   { content: ''; }
+      33%  { content: '.'; }
+      66%  { content: '..'; }
+      100% { content: '...'; }
+    }
+    .clue {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .squares {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .square {
+      width: 2rem;
+      height: 2rem;
+      border: 2px solid white;
+      background: white;
+      color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+    }
+    .square.active {
+      animation: flashFill 1s infinite alternate;
+    }
+    @keyframes flashFill {
+      from { background: white; color: black; }
+      to   { background: black; color: white; }
+    }
+    .game-screen.flash-red .square {
+      animation: redFlash 0.2s 3 alternate;
+    }
+    @keyframes redFlash {
+      from { background: white; color: black; }
+      to   { background: red;   color: white; }
+    }
+    .game-screen.flash-green .square {
+      animation: greenFlash 2s 1;
+    }
+    @keyframes greenFlash {
+      0%  { background: white; color: black; }
+      50% { background: green; color: white; }
+      100%{ background: white; color: black; }
+    }
+    .submit-button {
+      margin-top: 1rem;
+    }
+    .fireworks {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+    .pixel {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+    }
+  </style>
 </head>
 <body>
   <!-- Mode & Difficulty Menu -->
   <div class="menu-bar">
     <div class="menu-group">
-      <button class="menu-btn" data-type="normal">Normal</button>
-      <button class="menu-btn" data-type="cryptic">Cryptic</button>
+      <button class="menu-btn"        data-type="normal">Normal</button>
+      <button class="menu-btn active" data-type="cryptic">Cryptic</button>
     </div>
     <div class="menu-group">
-      <button class="menu-btn" data-difficulty="easy">Easy</button>
-      <button class="menu-btn" data-difficulty="medium">Medium</button>
-      <button class="menu-btn" data-difficulty="hard">Hard</button>
+      <button class="menu-btn"        data-difficulty="easy">Easy</button>
+      <button class="menu-btn active" data-difficulty="medium">Medium</button>
+      <button class="menu-btn"        data-difficulty="hard">Hard</button>
     </div>
   </div>
 
@@ -36,6 +160,117 @@
   <!-- Fireworks Overlay -->
   <div class="fireworks" id="fireworks"></div>
 
-  <script src="script.js"></script>
+  <script>
+    // Menu toggles
+    let mode = 'cryptic';
+    let level = 'medium';
+    document.querySelectorAll('.menu-btn[data-type]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        mode = btn.dataset.type;
+        document.querySelectorAll('.menu-btn[data-type]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+    document.querySelectorAll('.menu-btn[data-difficulty]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        level = btn.dataset.difficulty;
+        document.querySelectorAll('.menu-btn[data-difficulty]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Load local JSON clues
+    let allClues = [];
+    window.addEventListener('load', () => {
+      fetch('clues.json')
+        .then(res => res.json())
+        .then(json => { allClues = json; })
+        .catch(err => console.error('Failed to load clues:', err));
+    });
+
+    // Start the game
+    function startGame() {
+      document.getElementById('welcome').style.display = 'none';
+      document.getElementById('game').style.display = 'flex';
+      fetchClue(0);
+    }
+
+    // Fetch one of 5 puzzles for today/type/level
+    function fetchClue(index) {
+      const today = new Date().toISOString().split('T')[0];
+      const pool = allClues.filter(p =>
+        p.date === today && p.type === mode && p.difficulty === level
+      );
+      const entry = pool[index] || pool[0];
+      if (!entry) return document.getElementById('clue').textContent = 'No clue available';
+      setupGame(entry.clue, entry.answer, index);
+    }
+
+    // Game state
+    let answer = '', letters = [], activeIndex = 0, currentIndex = 0;
+    const clueDiv = document.getElementById('clue');
+    const squaresDiv = document.getElementById('squares');
+    const gameScreen = document.getElementById('game');
+
+    function setupGame(clueText, ans, idx) {
+      answer = ans; currentIndex = idx;
+      letters = Array(answer.length).fill(''); activeIndex = 0;
+      clueDiv.textContent = clueText;
+      renderSquares();
+    }
+
+    function renderSquares() {
+      squaresDiv.innerHTML = '';
+      letters.forEach((ltr, i) => {
+        const box = document.createElement('div');
+        box.className = 'square'; box.textContent = ltr;
+        box.addEventListener('click', () => { activeIndex = i; highlightActive(); });
+        squaresDiv.appendChild(box);
+      });
+      highlightActive();
+    }
+
+    function highlightActive() {
+      document.querySelectorAll('.square').forEach((b,i) => {
+        b.classList.toggle('active', i === activeIndex);
+      });
+    }
+
+    document.addEventListener('keydown', e => {
+      if (/^[a-zA-Z]$/.test(e.key)) {
+        letters[activeIndex] = e.key.toUpperCase();
+        if (activeIndex < letters.length-1) activeIndex++;
+        renderSquares();
+      } else if (e.key === 'Backspace') {
+        letters[activeIndex] = '';
+        if (activeIndex>0) activeIndex--;
+        renderSquares();
+      } else if (e.key === 'Enter') submitAnswer();
+    });
+
+    function submitAnswer() {
+      if (letters.join('') === answer) {
+        gameScreen.classList.add('flash-green');
+        setTimeout(() => {
+          gameScreen.classList.remove('flash-green');
+          currentIndex++;
+          if (currentIndex < 5) fetchClue(currentIndex);
+          else { document.getElementById('submitBtn').style.display='none'; showFireworks(); }
+        }, 2000);
+      } else {
+        gameScreen.classList.add('flash-red');
+        setTimeout(() => gameScreen.classList.remove('flash-red'), 600);
+      }
+    }
+
+    function showFireworks() {
+      const fw = document.getElementById('fireworks');
+      for (let i=0;i<100;i++){
+        const p = document.createElement('div'); p.className='pixel';
+        p.style.top = Math.random()*100+'vh'; p.style.left = Math.random()*100+'vw';
+        fw.appendChild(p);
+      }
+    }
+  </script>
 </body>
 </html>
