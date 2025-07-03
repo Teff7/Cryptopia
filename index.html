@@ -144,7 +144,7 @@
       // Wrap fodder words
       entry.fodderWords.forEach(word => {
         const re = new RegExp('\\b' + escapeRegex(word) + '\\b', 'gi');
-        html = html.replace(re, `<span class="fodder" data-tooltip="This is the fodder, these letters are used">$&</span>`);
+        html = html.replace(re, `<span class="fodder" data-tooltip="USe these words to make or find the answer">$&</span>`);
       });
 
       // Wrap definition words last
