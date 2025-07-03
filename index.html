@@ -255,8 +255,15 @@
         setTimeout(() => {
           gameScreen.classList.remove('flash-green');
           currentIndex++;
-          if (currentIndex < 5) fetchClue(currentIndex);
-          else { document.getElementById('submitBtn').style.display='none'; showFireworks(); }
+          if (currentIndex < 5) {
+            fetchClue(currentIndex);
+          } else {
+            // Hide puzzle elements at end
+            document.getElementById('clue').style.display = 'none';
+            document.getElementById('squares').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+            showFireworks();
+          }
         }, 2000);
       } else {
         gameScreen.classList.add('flash-red');
