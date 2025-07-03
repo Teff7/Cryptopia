@@ -1,13 +1,122 @@
 [
-  {"id":5,"date":"2025-07-03","type":"cryptic","clue":"Depressed in Widow nightmare. (4)","answer":"DOWN","definitionWords":["Depressed"]},
-  {"id":6,"date":"2025-07-03","type":"cryptic","clue":"Star lit up rebel city. (9)","answer":"CELEBRITY","definitionWords":["Star"]},
-  {"id":7,"date":"2025-07-03","type":"cryptic","clue":"Former wine \"contains exhaust\" (7)","answer":"RETIRED","definitionWords":["Former"]},
-  {"id":8,"date":"2025-07-03","type":"cryptic","clue":"Wicked \"back to walk the earth!\" (4)","answer":"LIVE","definitionWords":["Wicked"]},
-  {"id":9,"date":"2025-07-03","type":"cryptic","clue":"Moral within \"Marathon\" establishment? (6)","answer":"HONEST","definitionWords":["Moral"]},
-
-  {"id":10,"date":"2025-07-03","type":"normal","clue":"Not up. (4)","answer":"DOWN","definitionWords":["Not up"]},
-  {"id":11,"date":"2025-07-03","type":"normal","clue":"Famous person. (9)","answer":"CELEBRITY","definitionWords":["Famous person"]},
-  {"id":12,"date":"2025-07-03","type":"normal","clue":"Withdrawn from active duty. (7)","answer":"RETIRED","definitionWords":["Withdrawn from active duty"]},
-  {"id":13,"date":"2025-07-03","type":"normal","clue":"Not recorded; happening now. (4)","answer":"LIVE","definitionWords":["Not recorded; happening now"]},
-  {"id":14,"date":"2025-07-03","type":"normal","clue":"Truthful; free from deceit. (6)","answer":"HONEST","definitionWords":["Truthful; free from deceit"]}
+  {
+    "id": 5,
+    "date": "2025-07-03",
+    "type": "cryptic",
+    "clueType": "hidden",
+    "clue": "Depressed in Widow nightmare. (4)",
+    "normalClue": "Not up. (4)",
+    "answer": "DOWN",
+    "definitionWords": ["Depressed"],
+    "indicatorWords": ["in"],
+    "fodderWords": ["Widow nightmare"]
+  },
+  {
+    "id": 6,
+    "date": "2025-07-03",
+    "type": "cryptic",
+    "clueType": "anagram",
+    "clue": "Star lit up rebel city. (9)",
+    "normalClue": "Famous person. (9)",
+    "answer": "CELEBRITY",
+    "definitionWords": ["Star"],
+    "indicatorWords": ["lit up"],
+    "fodderWords": ["rebel city"]
+  },
+  {
+    "id": 7,
+    "date": "2025-07-03",
+    "type": "cryptic",
+    "clueType": "container",
+    "clue": "Former wine \"contains exhaust\" (7)",
+    "normalClue": "Withdrawn from active duty. (7)",
+    "answer": "RETIRED",
+    "definitionWords": ["Former"],
+    "indicatorWords": ["contains"],
+    "fodderWords": ["wine", "exhaust"]
+  },
+  {
+    "id": 8,
+    "date": "2025-07-03",
+    "type": "cryptic",
+    "clueType": "reversal",
+    "clue": "Wicked \"back to walk the earth!\" (4)",
+    "normalClue": "Not recorded; happening now. (4)",
+    "answer": "LIVE",
+    "definitionWords": ["Wicked"],
+    "indicatorWords": ["back"],
+    "fodderWords": ["evil"]
+  },
+  {
+    "id": 9,
+    "date": "2025-07-03",
+    "type": "cryptic",
+    "clueType": "hidden",
+    "clue": "Moral within \"Marathon establishment\"? (6)",
+    "normalClue": "Truthful; free from deceit. (6)",
+    "answer": "HONEST",
+    "definitionWords": ["Moral"],
+    "indicatorWords": ["within"],
+    "fodderWords": ["Marathon establishment"]
+  },
+  {
+    "id": 10,
+    "date": "2025-07-03",
+    "type": "normal",
+    "clueType": "normal",
+    "clue": "Not up. (4)",
+    "normalClue": "Not up. (4)",
+    "answer": "DOWN",
+    "definitionWords": ["Not up"],
+    "indicatorWords": [],
+    "fodderWords": []
+  },
+  {
+    "id": 11,
+    "date": "2025-07-03",
+    "type": "normal",
+    "clueType": "normal",
+    "clue": "Famous person. (9)",
+    "normalClue": "Famous person. (9)",
+    "answer": "CELEBRITY",
+    "definitionWords": ["Famous person"],
+    "indicatorWords": [],
+    "fodderWords": []
+  },
+  {
+    "id": 12,
+    "date": "2025-07-03",
+    "type": "normal",
+    "clueType": "normal",
+    "clue": "Withdrawn from active duty. (7)",
+    "normalClue": "Withdrawn from active duty. (7)",
+    "answer": "RETIRED",
+    "definitionWords": ["Withdrawn from active duty"],
+    "indicatorWords": [],
+    "fodderWords": []
+  },
+  {
+    "id": 13,
+    "date": "2025-07-03",
+    "type": "normal",
+    "clueType": "normal",
+    "clue": "Not recorded; happening now. (4)",
+    "normalClue": "Not recorded; happening now. (4)",
+    "answer": "LIVE",
+    "definitionWords": ["Not recorded; happening now"],
+    "indicatorWords": [],
+    "fodderWords": []
+  },
+  {
+    "id": 14,
+    "date": "2025-07-03",
+    "type": "normal",
+    "clueType": "normal",
+    "clue": "Truthful; free from deceit. (6)",
+    "normalClue": "Truthful; free from deceit. (6)",
+    "answer": "HONEST",
+    "definitionWords": ["Truthful; free from deceit"],
+    "indicatorWords": [],
+    "fodderWords": []
+  }
 ]
