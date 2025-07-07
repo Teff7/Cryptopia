@@ -1,4 +1,4 @@
-// script.js - updated to use local clues.json for testing
+// script.js - using local clues.json, without date filtering
 
 // Game mode and difficulty variables
 let mode = 'normal';
@@ -38,17 +38,13 @@ function startGame() {
 
 // Fetch one of the 5 puzzles from the loaded JSON pool
 function fetchClue(index) {
-  const today = new Date().toISOString().split('T')[0];
-  // Filter for today's clues matching mode and difficulty
+  // For testing, ignore the date
   const pool = allClues.filter(p =>
-    p.date === today &&
     p.type === mode &&
     p.difficulty === level
   );
-  // Pick the requested index or default to first
   const entry = pool[index] || pool[0];
   if (!entry) {
-    // No matching clue found
     document.getElementById('clue').textContent = 'No clue available';
     return;
   }
@@ -58,88 +54,4 @@ function fetchClue(index) {
 // Game state variables
 let answer = '';
 let letters = [];
-let activeIndex = 0;
-let currentIndex = 0;
-const clueDiv = document.getElementById('clue');
-const squaresDiv = document.getElementById('squares');
-const gameScreen = document.getElementById('game');
-
-// Initialise puzzle display
-function setupGame(clueText, ans, idx) {
-  answer = ans;
-  letters = Array(answer.length).fill('');
-  activeIndex = 0;
-  currentIndex = idx;
-  clueDiv.textContent = clueText;
-  renderSquares();
-}
-
-// Render the letter squares
-function renderSquares() {
-  squaresDiv.innerHTML = '';
-  letters.forEach((ltr, i) => {
-    const box = document.createElement('div');
-    box.className = 'square';
-    box.textContent = ltr;
-    box.addEventListener('click', () => {
-      activeIndex = i;
-      highlightActive();
-    });
-    squaresDiv.appendChild(box);
-  });
-  highlightActive();
-}
-
-// Highlight the active square
-function highlightActive() {
-  document.querySelectorAll('.square').forEach((b, i) => {
-    b.classList.toggle('active', i === activeIndex);
-  });
-}
-
-// Handle keyboard input
-document.addEventListener('keydown', (e) => {
-  if (/^[a-zA-Z]$/.test(e.key) && activeIndex >= 0) {
-    letters[activeIndex] = e.key.toUpperCase();
-    if (activeIndex < letters.length - 1) activeIndex++;
-    renderSquares();
-  } else if (e.key === 'Backspace') {
-    letters[activeIndex] = '';
-    if (activeIndex > 0) activeIndex--;
-    renderSquares();
-  } else if (e.key === 'Enter') {
-    submitAnswer();
-  }
-});
-
-// Submit answer and advance or show fireworks
-function submitAnswer() {
-  if (letters.join('') === answer) {
-    gameScreen.classList.add('flash-green');
-    setTimeout(() => {
-      gameScreen.classList.remove('flash-green');
-      currentIndex++;
-      if (currentIndex < 5) {
-        fetchClue(currentIndex);
-      } else {
-        document.getElementById('submitBtn').style.display = 'none';
-        showFireworks();
-      }
-    }, 2000);
-  } else {
-    gameScreen.classList.add('flash-red');
-    setTimeout(() => gameScreen.classList.remove('flash-red'), 600);
-  }
-}
-
-// Simple pixel fireworks display
-function showFireworks() {
-  const container = document.getElementById('fireworks');
-  for (let i = 0; i < 100; i++) {
-    const pixel = document.createElement('div');
-    pixel.className = 'pixel';
-    pixel.style.top = `${Math.random() * 100}vh`;
-    pixel.style.left = `${Math.random() * 100}vw`;
-    container.appendChild(pixel);
-  }
-}
+let activeI
