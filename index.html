@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Daily Crossword Game</title>
   <style>
     html {
@@ -41,9 +42,7 @@
       font-size: 1rem;
       cursor: pointer;
     }
-    .play-button {
-      margin-top: 2rem;
-    }
+    .play-button { margin-top: 2rem; }
     .dots::after {
       content: '...';
       display: inline-block;
@@ -80,19 +79,23 @@
       animation: flashFill 1s infinite alternate;
     }
     @keyframes flashFill {
-      0%{background:white;color:black;}100%{background:black;color:white;}
+      0% { background: white; color: black; }
+      100% { background: black; color: white; }
     }
     .game-screen.flash-red .square {
       animation: redFlash 0.2s 3 alternate;
     }
     @keyframes redFlash {
-      0%{background:white;color:black;}100%{background:red;color:white;}
+      0% { background: white; color: black; }
+      100% { background: red; color: white; }
     }
     .game-screen.flash-green .square {
       animation: greenFlash 2s 1;
     }
     @keyframes greenFlash {
-      0%{background:white;color:black;}50%{background:green;color:white;}100%{background:white;color:black;}
+      0% { background: white; color: black; }
+      50% { background: green; color: white; }
+      100% { background: white; color: black; }
     }
     .help-grid {
       display: grid;
@@ -153,20 +156,41 @@
       from { opacity: 0; transform: translateX(-50%) translateY(5px); }
       to   { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
-    .clue.anagram       { --indicator-col: lightblue; }
-    .clue.hidden        { --indicator-col: green; }
-    .clue.container     { --indicator-col: purple; }
-    .clue.reversal      { --indicator-col: teal; }
-    .clue.deletion      { --indicator-col: gold; }
-    .clue.homophone     { --indicator-col: magenta; }
-    .clue.acrostic      { --indicator-col: navy; }
-    .clue.spoonerism    { --indicator-col: orange; }
-    .clue.charade       { --indicator-col: brown; }
-    .clue.double        { --indicator-col: gray; }
-    .clue.lit           { --indicator-col: silver; }
+    .clue.anagram    { --indicator-col: lightblue; }
+    .clue.hidden     { --indicator-col: green; }
+    .clue.container  { --indicator-col: purple; }
+    .clue.reversal   { --indicator-col: teal; }
+    .clue.deletion   { --indicator-col: gold; }
+    .clue.homophone  { --indicator-col: magenta; }
+    .clue.acrostic   { --indicator-col: navy; }
+    .clue.spoonerism { --indicator-col: orange; }
+    .clue.charade    { --indicator-col: brown; }
+    .clue.double     { --indicator-col: gray; }
+    .clue.lit        { --indicator-col: silver; }
   </style>
 </head>
 <body>
+  <div class="welcome-screen" id="welcome">
+    <div class="welcome-message">Welcome<span class="dots"></span></div>
+    <button class="play-button" onclick="startGame()">Play</button>
+  </div>
+
+  <div class="game-screen" id="game" style="display:none;">
+    <div class="clue" id="clue"></div>
+    <div class="squares" id="squares"></div>
+    <button class="submit-button" id="submitBtn" onclick="submitAnswer()">Submit</button>
+    <div class="help-grid">
+      <button class="help-button" id="btnDef">Give me the Def!</button>
+      <button class="help-button" id="btnLetter">Give me a Letter!</button>
+      <button class="help-button" id="btnAnnot">Analyse Clue</button>
+      <button class="help-button" id="btnNorm">Give me a New Clue</button>
+    </div>
+  </div>
+
+  <div class="fireworks" id="fireworks"></div>
   <input id="mobileInput" inputmode="text" maxlength="1" style="opacity:0; position:absolute; left:-9999px;">
+
+  <!-- JavaScript goes at the end -->
+  <script src="script.js"></script>
 </body>
 </html>
