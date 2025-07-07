@@ -1,7 +1,7 @@
 // script.js - updated to use local clues.json for testing
 
 // Game mode and difficulty variables
-elet mode = 'normal';
+let mode = 'normal';
 let level = 'easy';
 
 // Load all clues from the local JSON file
