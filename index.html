@@ -5,48 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Crossword Game</title>
   <style>
-    body { margin:0; padding:0; background:black; color:white; font-family:sans-serif; text-align:center; overflow:hidden; }
-    .welcome-screen, .game-screen { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; }
-    .welcome-message { font-size:2rem; }
-    .play-button, .submit-button, .help-button { border:2px solid white; background:transparent; color:white; padding:0.5rem 1rem; border-radius:10px; font-size:1rem; cursor:pointer; }
-    .play-button { margin-top:2rem; }
-    .dots::after { content:'...'; display:inline-block; width:1.5rem; text-align:left; animation:blink 2s steps(3,end) infinite; }
-    @keyframes blink { 0%{content:'';}33%{content:'.';}66%{content:'..';}100%{content:'...';} }
-    .clue { font-size:1.2rem; margin-bottom:1rem; position:relative; }
-    .squares { display:flex; justify-content:center; gap:0.5rem; margin-bottom:1rem; }
-    .square { width:2rem; height:2rem; border:2px solid white; background:white; color:black; display:flex; justify-content:center; align-items:center; font-size:1.5rem; }
-    .square.active { animation:flashFill 1s infinite alternate; }
-    @keyframes flashFill { 0%{background:white;color:black;}100%{background:black;color:white;} }
-    .game-screen.flash-red .square { animation:redFlash 0.2s 3 alternate; }
-    @keyframes redFlash { 0%{background:white;color:black;}100%{background:red;color:white;} }
-    .game-screen.flash-green .square { animation:greenFlash 2s 1; }
-    @keyframes greenFlash {0%{background:white;color:black;}50%{background:green;color:white;}100%{background:white;color:black;} }
-    .help-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:1rem; }
-    .fireworks { position:absolute; top:0; left:0; width:100vw; height:100vh; pointer-events:none; }
-    .pixel { position:absolute; width:2px; height:2px; background:white; }
-    /* Annotation & Help styling */
-    .clue .indicator, .clue .fodder, .clue .def { color:inherit; position:relative; }
-    .clue.help-on .def { color:hotpink; }
-    .clue.help-on .def:hover::after { content:attr(data-tooltip); color:black; background:white; padding:0.2rem; border-radius:4px; font-size:0.8rem; position:absolute; bottom:-1.5rem; left:50%; transform:translateX(-50%); white-space:nowrap; }
-    .clue.annot-on .indicator { color:var(--indicator-col, lightblue); }
-    .clue.annot-on .indicator:hover::after { content:attr(data-tooltip); color:black; background:white; padding:0.2rem; border-radius:4px; font-size:0.8rem; position:absolute; bottom:-1.5rem; left:50%; transform:translateX(-50%); white-space:nowrap; }
-    .clue.annot-on .fodder { color:red; }
-    .clue.annot-on .fodder:hover::after { content:attr(data-tooltip); color:black; background:white; padding:0.2rem; border-radius:4px; font-size:0.8rem; position:absolute; bottom:-1.5rem; left:50%; transform:translateX(-50%); white-space:nowrap; }
-    /* ClueType indicator colours */
-    .clue.anagram       { --indicator-col:lightblue; }
-    .clue.hidden        { --indicator-col:green; }
-    .clue.container     { --indicator-col:purple; }
-    .clue.reversal      { --indicator-col:teal; }
-    .clue.deletion      { --indicator-col:gold; }
-    .clue.homophone     { --indicator-col:magenta; }
-    .clue.acrostic      { --indicator-col:navy; }
-    .clue.spoonerism    { --indicator-col:orange; }
-    .clue.charade       { --indicator-col:brown; }
-    .clue.double        { --indicator-col:gray; }
-    .clue.lit           { --indicator-col:silver; }
+    html { font-size: clamp(14px, 2vw, 20px); }
+    body {
+      margin: 0;
+      padding: 1rem;
+      background: black;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .welcome-screen, .game-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .welcome-message { font-size: 2rem; }
+    .play-button, .submit-button, .help-button {
+      border: 2px solid white;
+      background: transparent;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .play-button { margin-top: 2rem; }
+    .dots::after {
+      content: '...';
+      display: inline-block;
+      width: 1.5rem;
+      text-align: left;
+      animation: blink 2s steps(3, end) infinite;
+    }
+    @keyframes blink {
+      0% { content: ''; }
+      33% { content: '.'; }
+      66% { content: '..'; }
+      100% { content: '...'; }
+    }
+    .clue {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .squares {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .square {
+      width: 2rem;
+      height: 2rem;
+      border: 2px solid white;
+      background: white;
+      color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+    }
+    .square.active {
+      animation: flashFill 1s infinite alternate;
+    }
+    @keyframes flashFill {
+      0% { background: white; color: black; }
+      100% { background: black; color: white; }
+    }
+    .game-screen.flash-red .square {
+      animation: redFlash 0.2s 3 alternate;
+    }
+    @keyframes redFlash {
+      0% { background: white; color: black; }
+      100% { background: red; color: white; }
+    }
+    .game-screen.flash-green .square {
+      animation: greenFlash 2s 1;
+    }
+    @keyframes greenFlash {
+      0% { background: white; color: black; }
+      50% { background: green; color: white; }
+      100% { background: white; color: black; }
+    }
+    .help-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .fireworks {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+    .pixel {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+    }
+    .clue .indicator, .clue .fodder, .clue .def {
+      color: inherit;
+      position: relative;
+      padding: 0 0.25rem;
+      border-radius: 3px;
+    }
+    .clue.help-on .def {
+      background: hotpink;
+      color: black;
+    }
+    .clue.annot-on .indicator {
+      background: var(--indicator-col, lightblue);
+      color: black;
+    }
+    .clue.annot-on .fodder {
+      background: red;
+      color: white;
+    }
+    .clue .indicator:hover::after,
+    .clue .fodder:hover::after,
+    .clue .def:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -1.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--tooltip-bg, black);
+      color: var(--tooltip-color, white);
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      animation: fadeIn 0.3s ease-in-out;
+      white-space: nowrap;
+      z-index: 2;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(5px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .clue.anagram       { --indicator-col: lightblue; --tooltip-bg: lightblue; --tooltip-color: black; }
+    .clue.hidden        { --indicator-col: green; --tooltip-bg: green; --tooltip-color: black; }
+    .clue.container     { --indicator-col: purple; --tooltip-bg: purple; --tooltip-color: white; }
+    .clue.reversal      { --indicator-col: teal; --tooltip-bg: teal; --tooltip-color: white; }
+    .clue.deletion      { --indicator-col: gold; --tooltip-bg: gold; --tooltip-color: black; }
+    .clue.homophone     { --indicator-col: magenta; --tooltip-bg: magenta; --tooltip-color: white; }
+    .clue.acrostic      { --indicator-col: navy; --tooltip-bg: navy; --tooltip-color: white; }
+    .clue.spoonerism    { --indicator-col: orange; --tooltip-bg: orange; --tooltip-color: black; }
+    .clue.charade       { --indicator-col: brown; --tooltip-bg: brown; --tooltip-color: white; }
+    .clue.double        { --indicator-col: gray; --tooltip-bg: gray; --tooltip-color: white; }
+    .clue.lit           { --indicator-col: silver; --tooltip-bg: silver; --tooltip-color: black; }
   </style>
 </head>
 <body>
+  <input id="mobileInput" inputmode="text" maxlength="1" style="opacity:0; position:absolute; left:-9999px;">
   <div class="welcome-screen" id="welcome">
     <div class="welcome-message">Welcome<span class="dots"></span></div>
     <button class="play-button" onclick="startGame()">Play</button>
@@ -63,164 +186,5 @@
     </div>
   </div>
   <div class="fireworks" id="fireworks"></div>
-  <script>
-    const TYPE = 'cryptic';
-    let allClues = [];
-    const tooltips = {
-      anagram: 'This indicates an anagram clue, shuffle the letters in the red text!',
-      hidden: 'This indicates a hidden-word clue, look inside the red text!',
-      container: 'This indicates a container clue, insert the letters as directed!',
-      reversal: 'This indicates a reversal clue, read the highlighted letters backwards!',
-      deletion: 'This indicates a deletion clue, remove the appropriate letters!',
-      homophone: 'This indicates a homophone clue, use a word that sounds like the red text!',
-      acrostic: 'This indicates an initial-letter clue, take the first letters of highlighted words!',
-      spoonerism: 'This indicates a Spoonerism clue, swap the initial sounds of highlighted words!',
-      charade: 'This indicates a charade clue, join the highlighted parts in order!',
-      double: 'This indicates a double-definition clue, both parts define the same word!',
-      lit: 'This indicates an &lit clue, the entire clue is wordplay and definition!'
-    };
-
-    function escapeRegex(s) {
-      return s.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&');
-    }
-
-    window.addEventListener('load', () => {
-      fetch('clues.json')
-        .then(res => res.json())
-        .then(json => {
-          allClues = json.filter(p => p.type === TYPE);
-          setupHandlers();
-          fetchClue(0);
-        })
-        .catch(console.error);
-    });
-
-    function setupHandlers() {
-      document.getElementById('btnDef').onclick = () => document.getElementById('clue').classList.toggle('help-on');
-      document.getElementById('btnLetter').onclick = () => {
-        const empties = letters.map((l, i) => (l === '' ? i : null)).filter(i => i !== null);
-        if (!empties.length) return;
-        const rand = empties[Math.floor(Math.random() * empties.length)];
-        letters[rand] = answer[rand];
-        renderSquares();
-      };
-      document.getElementById('btnNorm').onclick = () => (clueDiv.textContent = currentEntry.normalClue);
-      document.getElementById('btnAnnot').onclick = () => document.getElementById('clue').classList.toggle('annot-on');
-    }
-
-    let answer = '';
-    let letters = [];
-    let activeIndex = 0;
-    let currentIndex = 0;
-    let currentEntry;
-    const clueDiv = document.getElementById('clue');
-    const squaresDiv = document.getElementById('squares');
-    const gameScreen = document.getElementById('game');
-
-    function startGame() {
-      document.getElementById('welcome').style.display = 'none';
-      gameScreen.style.display = 'flex';
-    }
-
-    function fetchClue(i) {
-      currentIndex = i;
-      currentEntry = allClues[i] || allClues[0];
-      setupGame(currentEntry);
-    }
-
-    function setupGame(entry) {
-      answer = entry.answer;
-      letters = Array(answer.length).fill('');
-      activeIndex = 0;
-
-      let html = entry.clue;
-
-      // Wrap indicator words
-      entry.indicatorWords.forEach(word => {
-        const re = new RegExp('\\b' + escapeRegex(word) + '\\b', 'gi');
-        html = html.replace(re, `<span class="indicator" data-tooltip="${tooltips[entry.clueType]}">$&</span>`);
-      });
-
-      // Wrap fodder words
-      entry.fodderWords.forEach(word => {
-        const re = new RegExp('\\b' + escapeRegex(word) + '\\b', 'gi');
-        html = html.replace(re, `<span class="fodder" data-tooltip="USe these words to make or find the answer">$&</span>`);
-      });
-
-      // Wrap definition words last
-      entry.definitionWords.forEach(word => {
-        const re = new RegExp('\\b' + escapeRegex(word) + '\\b', 'gi');
-        html = html.replace(re, `<span class="def" data-tooltip="This is the definition, it's what the answer means!">$&</span>`);
-      });
-
-      clueDiv.className = `clue ${entry.clueType}`;
-      clueDiv.innerHTML = html;
-      clueDiv.classList.remove('help-on', 'annot-on');
-      renderSquares();
-    }
-
-    function renderSquares() {
-      squaresDiv.innerHTML = '';
-      letters.forEach((ltr, i) => {
-        const box = document.createElement('div');
-        box.className = 'square';
-        box.textContent = ltr;
-        box.onclick = () => { activeIndex = i; highlightActive(); };
-        squaresDiv.appendChild(box);
-      });
-      highlightActive();
-    }
-
-    function highlightActive() {
-      document.querySelectorAll('.square').forEach((b, i) => b.classList.toggle('active', i === activeIndex));
-    }
-
-    document.addEventListener('keydown', e => {
-      if (/^[a-zA-Z]$/.test(e.key)) {
-        letters[activeIndex] = e.key.toUpperCase();
-        if (activeIndex < letters.length - 1) activeIndex++;
-        renderSquares();
-      } else if (e.key === 'Backspace') {
-        letters[activeIndex] = '';
-        if (activeIndex > 0) activeIndex--;
-        renderSquares();
-      } else if (e.key === 'Enter') {
-        submitAnswer();
-      }
-    });
-
-    function submitAnswer() {
-      if (letters.join('') === answer) {
-        gameScreen.classList.add('flash-green');
-        setTimeout(() => {
-          gameScreen.classList.remove('flash-green');
-          if (currentIndex < allClues.length - 1) fetchClue(currentIndex + 1);
-          else finishGame();
-        }, 2000);
-      } else {
-        gameScreen.classList.add('flash-red');
-        setTimeout(() => gameScreen.classList.remove('flash-red'), 600);
-      }
-    }
-
-    function finishGame() {
-      ['clue', 'squares', 'submitBtn', 'btnDef', 'btnLetter', 'btnAnnot', 'btnNorm'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-      });
-      showFireworks();
-    }
-
-    function showFireworks() {
-      const fw = document.getElementById('fireworks');
-      for (let i = 0; i < 100; i++) {
-        const p = document.createElement('div');
-        p.className = 'pixel';
-        p.style.top = Math.random() * 100 + 'vh';
-        p.style.left = Math.random() * 100 + 'vw';
-        fw.appendChild(p);
-      }
-    }
-  </script>
 </body>
 </html>
